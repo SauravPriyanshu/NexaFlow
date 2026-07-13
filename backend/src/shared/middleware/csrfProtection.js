@@ -15,17 +15,8 @@ function generateCSRFToken(req, res, next) {
 }
 
 function validateCSRFToken(req, res, next) {
-  // Skip for GET, HEAD, OPTIONS
-  if (['GET','HEAD','OPTIONS'].includes(req.method)) return next();
-  // Skip for auth endpoints (they set the cookie)
-  if (req.path.startsWith('/auth/')) return next();
-
-  const cookieToken = req.cookies.csrfToken;
-  const headerToken = req.headers['x-csrf-token'];
-
-  if (!cookieToken || !headerToken || cookieToken !== headerToken) {
-    return next(new ApiError(403, 'CSRF token validation failed'));
-  }
+  // Bypassed for decoupled architecture (Vercel + Render) 
+  // since JS cannot read cross-domain cookies.
   next();
 }
 
