@@ -33,7 +33,7 @@ const registerUser = async ({ name, email, password }) => {
     name,
     email,
     passwordHash,
-    isVerified: false,
+    isVerified: true, // TEMPORARY BYPASS
     verifyToken: hashedVerifyToken,
     verifyTokenExpiry,
   });
@@ -41,7 +41,7 @@ const registerUser = async ({ name, email, password }) => {
   await user.save();
 
   // Send verification email
-  await sendVerificationEmail(email, rawVerifyToken);
+  // await sendVerificationEmail(email, rawVerifyToken); // TEMPORARY BYPASS
 
   // Return public JSON representation
   return user.toPublicJSON();
