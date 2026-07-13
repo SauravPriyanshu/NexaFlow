@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ListTodo, PlusSquare, Check, User, ExternalLink, Plus, CheckCircle } from 'lucide-react';
 import { useAI } from '../../../context/AIContext';
+import { useTask } from '../../../context/TaskContext';
 import SubTypeSelector from '../shared/SubTypeSelector';
 import AITextarea from '../shared/AITextarea';
 import AISubmitButton from '../shared/AISubmitButton';
@@ -14,6 +15,7 @@ const ConvertTab = () => {
   const { tabState, updateTabState, runAI, loading, error, rateLimitCountdown, closeAI } = useAI();
   const state = tabState.convert;
   const { currentProject } = useProject();
+  const { addTask } = useTask();
   const navigate = useNavigate();
 
   const [addingIds, setAddingIds] = useState([]);
@@ -34,7 +36,7 @@ const ConvertTab = () => {
     if (!currentProject) return;
     try {
       setAddingIds(prev => [...prev, index]);
-      await taskService.createTask({
+      const response = await taskService.createTask({
         title: task.title,
         description: task.description,
         priority: ['low', 'medium', 'high', 'urgent'].includes((task.priority || '').toLowerCase().trim()) 
@@ -44,6 +46,9 @@ const ConvertTab = () => {
         orgId: typeof currentProject.orgId === 'object' ? currentProject.orgId._id : currentProject.orgId,
         status: 'todo'
       });
+      if (response && response.data) {
+        addTask(response.data);
+      }
       updateTabState('convert', prev => ({ addedTaskIds: [...prev.addedTaskIds, index] }));
     } catch (err) {
       console.error(err);
