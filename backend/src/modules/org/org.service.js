@@ -27,7 +27,8 @@ const getMyOrgs = async (userId) => {
   if (cached) return cached;
 
   const orgs = await Org.find({ 'members.userId': userId })
-    .populate('members.userId', 'name email avatar');
+    .populate('members.userId', 'name email avatar')
+    .lean();
     
   await setCache(cacheKey, orgs, TTL_MEDIUM);
   return orgs;
@@ -38,7 +39,9 @@ const getOrgById = async (orgId) => {
   const cached = await getCache(cacheKey);
   if (cached) return cached;
 
-  const org = await Org.findById(orgId).populate('members.userId', 'name email avatar');
+  const org = await Org.findById(orgId)
+    .populate('members.userId', 'name email avatar')
+    .lean();
   if (!org) {
     throw new ApiError(404, 'Organization not found');
   }

@@ -64,7 +64,8 @@ const createTask = async ({ title, description, projectId, orgId, createdBy, ass
 const getMyTasks = async (userId) => {
   return await Task.find({ assignees: userId })
     .populate('projectId', 'name color')
-    .sort({ dueDate: 1 });
+    .sort({ dueDate: 1 })
+    .lean();
 };
 
 const getTasksByProject = async (projectId, userId, filters = {}) => {
@@ -89,7 +90,8 @@ const getTasksByProject = async (projectId, userId, filters = {}) => {
 
   const tasks = await Task.find(query)
     .populate('assignees', 'name email avatar')
-    .sort({ order: 1 });
+    .sort({ order: 1 })
+    .lean();
 
   const groupedTasks = {};
   const statuses = project.taskStatuses || [
@@ -120,7 +122,8 @@ const getTaskById = async (taskId, userId) => {
   const task = await Task.findById(taskId)
     .populate('assignees', 'name email avatar')
     .populate('createdBy', 'name email avatar')
-    .populate('projectId', 'name color');
+    .populate('projectId', 'name color')
+    .lean();
 
   if (!task) {
     throw new ApiError(404, 'Task not found');

@@ -80,7 +80,8 @@ const getProjectById = async (projectId, userId) => {
   if (!project) {
     project = await Project.findById(projectId)
       .populate('members.userId', 'name email avatar')
-      .populate('createdBy', 'name email avatar');
+      .populate('createdBy', 'name email avatar')
+      .lean();
 
     if (!project) {
       throw new ApiError(404, 'Project not found');

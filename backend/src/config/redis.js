@@ -4,6 +4,7 @@ const { logger } = require('../shared/utils/logger');
 const redisOptions = {
   maxRetriesPerRequest: null,
   enableOfflineQueue: false,
+  commandTimeout: 2000,
   retryStrategy(times) {
     return Math.min(times * 100, 3000);
   }
