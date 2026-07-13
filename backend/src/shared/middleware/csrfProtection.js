@@ -6,8 +6,8 @@ function generateCSRFToken(req, res, next) {
     const token = crypto.randomBytes(32).toString('hex');
     res.cookie('csrfToken', token, {
       httpOnly: false, // must be readable by JS
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none', // Allow cross-domain requests from Vercel to Render
+      secure: true, // Required for sameSite: 'none'
       maxAge: 24 * 60 * 60 * 1000 // 24h
     });
   }
