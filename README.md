@@ -4,7 +4,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-nexaflow.vercel.app-06b6d4?style=flat-square)](https://nexaflow.vercel.app)
 [![API Docs](https://img.shields.io/badge/API%20Docs-Swagger-85ea2d?style=flat-square)](https://nexaflow-api.onrender.com/api/docs)
-[![Tests](https://img.shields.io/github/actions/workflow/status/yourusername/nexaflow/ci.yml?label=tests&style=flat-square)](https://github.com/yourusername/nexaflow/actions)
+[![Tests](https://img.shields.io/github/actions/workflow/status/SauravPriyanshu/NexaFlow/ci.yml?label=tests&style=flat-square)](https://github.com/SauravPriyanshu/NexaFlow/actions)
 [![Node](https://img.shields.io/badge/Node-20-339933?style=flat-square&logo=node.js)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://mongodb.com)
@@ -25,8 +25,9 @@ Built to demonstrate production-grade SDE skills for placement interviews.
 | Health Check | https://nexaflow-api.onrender.com/api/health |
 
 **Demo credentials:**
-Email: `demo@nexaflow.dev`
-Password: `Demo123!`
+
+- Email: `demo@nexaflow.dev`
+- Password: `Demo123!`
 
 ---
 
@@ -90,8 +91,8 @@ See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for:
 
 ```bash
 # 1. Clone
-git clone https://github.com/yourusername/nexaflow.git
-cd nexaflow
+git clone https://github.com/SauravPriyanshu/NexaFlow.git
+cd NexaFlow
 
 # 2. Backend
 cd backend
@@ -123,20 +124,20 @@ docker-compose up --build
 
 ## Design Decisions
 
-**Why JWT + refresh token rotation instead of sessions?**
-Stateless tokens work across multiple server instances without shared session storage.
+**Why JWT + refresh token rotation instead of sessions?**  
+Stateless tokens work across multiple server instances without shared session storage.  
 Refresh token rotation means stolen tokens are detected on next legitimate use.
 
-**Why Redis for caching and rate limiting?**
-Redis INCR is atomic — no race conditions for rate limiting. Cache-aside pattern
+**Why Redis for caching and rate limiting?**  
+Redis INCR is atomic — no race conditions for rate limiting. Cache-aside pattern  
 means Redis down = app falls back to MongoDB gracefully.
 
-**Why Strategy pattern for AI?**
-Adding a new AI feature = one new class, one map entry. Zero changes to existing code.
+**Why Strategy pattern for AI?**  
+Adding a new AI feature = one new class, one map entry. Zero changes to existing code.  
 Directly demonstrates Open/Closed Principle.
 
-**Why MongoDB $text indexes with weights?**
-Title matches rank 10x higher than description matches. One compound index per
+**Why MongoDB $text indexes with weights?**  
+Title matches rank 10x higher than description matches. One compound index per  
 collection covers all searchable fields (MongoDB limit: one text index per collection).
 
 ---
@@ -176,6 +177,8 @@ Coverage report generated in `backend/coverage/`.
 ---
 
 ## Project Structure
+
+```text
 nexaflow/
 ├── backend/
 │   ├── src/
@@ -205,3 +208,4 @@ nexaflow/
 ├── .github/workflows/
 │   └── ci.yml
 └── docker-compose.yml
+```
