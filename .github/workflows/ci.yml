@@ -1,0 +1,118 @@
+name: NexaFlow CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  test-backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      mongodb:
+        image: mongo:7
+        ports: ['27017:27017']
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      MONGODB_URI: mongodb://localhost:27017/nexaflow_test
+      REDIS_URL: redis://localhost:6379
+      ACCESS_TOKEN_SECRET: test_access_secret_minimum_64_chars_long_for_security
+      REFRESH_TOKEN_SECRET: test_refresh_secret_minimum_64_chars_long_for_security
+      ACCESS_TOKEN_EXPIRY: 15m
+      REFRESH_TOKEN_EXPIRY: 7d
+      CLIENT_URL: http://localhost:5173
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test:unit
+      - name: Run integration tests
+        run: npm run test:integration
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./backend/coverage
+          flags: backend
+
+  test-frontend:
+    name: Frontend build check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Type check (if TypeScript)
+        run: npm run type-check || true
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: https://placeholder.onrender.com/api
+          VITE_SOCKET_URL: https://placeholder.onrender.com
+
+  deploy-backend:
+    name: Deploy backend to Render
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            --fail
+        # RENDER_DEPLOY_HOOK_URL: get from Render dashboard → service → settings → deploy hook
+
+  deploy-frontend:
+    name: Deploy frontend to Vercel
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+      - name: Deploy to Vercel
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: ./frontend
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
