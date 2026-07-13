@@ -39,6 +39,8 @@ jobs:
       ACCESS_TOKEN_EXPIRY: 15m
       REFRESH_TOKEN_EXPIRY: 7d
       CLIENT_URL: http://localhost:5173
+      GOOGLE_CLIENT_ID: test_google_client_id
+      GOOGLE_CLIENT_SECRET: test_google_client_secret
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +50,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
       - name: Install deps
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Run unit tests
         run: npm run test:unit
       - name: Run integration tests
@@ -74,7 +76,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       - name: Install deps
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Type check (if TypeScript)
         run: npm run type-check || true
       - name: Build

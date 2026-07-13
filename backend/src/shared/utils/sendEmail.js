@@ -11,6 +11,9 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendEmail = async ({ to, subject, html }) => {
+  if (process.env.NODE_ENV === 'test') {
+    return Promise.resolve();
+  }
   const mailOptions = {
     from: process.env.EMAIL_FROM,
     to,
