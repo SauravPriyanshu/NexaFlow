@@ -2,27 +2,11 @@
 
 > AI-Powered Collaborative Project Management Platform
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-nexaflow.vercel.app-06b6d4?style=flat-square)](https://nexaflow.vercel.app)
-[![API Docs](https://img.shields.io/badge/API%20Docs-Swagger-85ea2d?style=flat-square)](https://nexaflow-api.onrender.com/api/docs)
-[![Tests](https://img.shields.io/github/actions/workflow/status/yourusername/nexaflow/ci.yml?label=tests&style=flat-square)](https://github.com/yourusername/nexaflow/actions)
-[![Node](https://img.shields.io/badge/Node-20-339933?style=flat-square&logo=node.js)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React-18-61dafb?style=flat-square&logo=react)](https://react.dev)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://mongodb.com)
-
 NexaFlow is a full-stack SaaS platform combining task management, real-time collaboration,
 AI-assisted documentation, and analytics into a single unified workspace.
 Built to demonstrate production-grade SDE skills for placement interviews.
 
 ---
-
-## Live URLs
-
-| Service | URL |
-|---------|-----|
-| Frontend | https://nexaflow.vercel.app |
-| Backend API | https://nexaflow-api.onrender.com |
-| API Documentation | https://nexaflow-api.onrender.com/api/docs |
-| Health Check | https://nexaflow-api.onrender.com/api/health |
 
 **Demo credentials:**
 Email: `demo@nexaflow.dev`
